@@ -1,0 +1,38 @@
+.catalog:
+  name: {{ .Branch }}
+  version: {{ .Tag }}
+  description: core-api
+  uuid: {{ .Branch }}-{{ .Count }}
+  questions:
+    - variable: auth_salt
+      label: API Token Salt
+      type: password
+      required: true
+
+core-api:
+  scale: 1
+  load_balancer_config:
+    lb_cookie_stickiness_policy:
+      indirect: true
+      cookie: api_stick_id
+      nocache: true
+      mode: insert
+    haproxy_config: {}
+  health_check:
+    port: 42
+    interval: 60000
+    strategy: none
+    unhealthy_threshold: 2
+    healthy_threshold: 2
+    response_timeout: 2000
+
+core-api-app:
+  scale: 1
+  health_check:
+    port: 8000
+    interval: 60000
+    strategy: none
+    unhealthy_threshold: 2
+    request_line: GET /node/api/status HTTP/1.1
+    healthy_threshold: 2
+    response_timeout: 1000

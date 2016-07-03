@@ -1,0 +1,18 @@
+core-api:
+image: rancher/load-balancer-service
+ports:
+- 8000:8000
+links:
+- core-api-app:core-api-app
+
+core-api-app:
+  image: jgreat/core-api:{{ .Tag }}
+  expose:
+    - 8000
+  environment:
+    RANCHER_SERVICE_DISCOVERY: 'true'
+    AUTH_API_TOKEN_SALT: ${auth_salt}
+    HOST_PORT: 8000
+  labels:
+    io.rancher.container.pull_image: always
+    io.rancher.container.hostname_override: container_name
