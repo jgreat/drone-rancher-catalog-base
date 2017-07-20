@@ -1,12 +1,13 @@
-core-api:
-image: rancher/load-balancer-service
-ports:
-- 8000:8000
-links:
-- core-api-app:core-api-app
+{{ .Project }}:
+  image: rancher/lb-service-haproxy:v0.6.4
+  ports:
+    - 8000:8000/tcp
+  labels:
+    io.rancher.container.agent.role: environmentAdmin
+    io.rancher.container.create_agent: 'true'
 
-core-api-app:
-  image: jgreat/core-api:{{ .Tag }}
+{{ .Project }}-app:
+  image: {{ .DockerRepo }}:{{ .Tag }}
   expose:
     - 8000
   environment:
